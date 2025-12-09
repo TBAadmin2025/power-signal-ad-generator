@@ -1,0 +1,384 @@
+/* ===== Full Screen Chat Layout ===== */
+.chatContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  background: #F9F7F4; /* Premium ivory */
+}
+
+/* ===== Header ===== */
+.headerBar {
+  width: 100%;
+  background: var(--aa-crimson);   /* flat, no gradient */
+  padding: 20px;
+  text-align: center;
+  border-bottom: 3px solid var(--aa-gold);
+  position: relative;             /* required for shimmer sweep */
+  overflow: hidden;               /* contains animation */
+}
+/* Shimmer sweep under header */
+.headerBar::after {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: -30%;
+  width: 30%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
+  animation: goldSweep 4.5s infinite ease-in-out;
+}
+
+@keyframes goldSweep {
+  0%   { transform: translateX(0); opacity: 0; }
+  10%  { opacity: 1; }
+  50%  { transform: translateX(400%); opacity: 0.8; }
+  100% { transform: translateX(800%); opacity: 0; }
+}
+
+
+.headerLogo {
+  max-height: 48px;
+  margin-bottom: 6px;
+}
+
+.headerSubtitle {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--aa-gold);
+  margin-bottom: 4px;
+}
+
+.headerTagline {
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--aa-white);
+  opacity: 0.9;
+}
+
+/* ===== Conversation Starters ===== */
+.startersTitle {
+  padding: 12px 20px 2px 20px;
+  font-weight: 600;
+  color: var(--aa-crimson);
+}
+
+.startersWrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 0 20px 8px 20px;
+}
+
+.starterBtn {
+  background: transparent;
+  color: var(--aa-crimson);
+  border: 2px solid var(--aa-gold);
+  border-radius: 999px;
+  padding: 8px 18px;
+  font-size: 0.78rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.2s ease, color 0.2s ease;
+}
+
+.starterBtn:hover {
+  background: var(--aa-crimson);
+  color: var(--aa-white);
+  transform: scale(1.04);
+}
+
+/* ===== Messages Section ===== */
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  white-space: pre-wrap;
+  background: #F9F7F4;  /* flat ivory, no grid */
+}
+
+
+/* ===== Message Bubbles ===== */
+.userMessage,
+.assistantMessage,
+.codeMessage {
+  margin: 10px 0;
+  max-width: 80%;
+  overflow-wrap: break-word;
+}
+
+/* User bubble */
+.userMessage {
+  align-self: flex-end;
+  padding: 12px 20px;
+  background: var(--aa-crimson);
+  color: var(--aa-white);
+  border-radius: 18px;
+}
+
+/* Assistant bubble with gold accent */
+.assistantRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.assistantMessage {
+  background: var(--aa-white);
+  color: var(--aa-text);
+  border-left: 4px solid var(--aa-gold);
+  border: 1px solid rgba(203,150,101,0.25);
+  padding: 16px 24px;
+  border-radius: 16px;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+  animation: advisorFade 0.3s ease;
+}
+
+.assistantMessage img {
+  max-width: 100%;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+
+@keyframes advisorFade {
+  0% { opacity: 0; transform: translateY(6px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Code blocks still supported */
+.codeMessage {
+  padding: 10px 16px;
+  background: #e9e9e9;
+  border-radius: 14px;
+  font-family: monospace;
+}
+
+/* ===== Avatar (pulse + persistent glow) ===== */
+.avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--aa-gold);
+
+  /* Keep original pulse */
+  animation: avatarPulse 0.7s ease-out;
+
+  /* Needed for pseudo-element glow layer */
+  position: relative;
+  z-index: 2;
+}
+
+/* Persistent ambient glow behind avatar */
+.avatar::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: rgba(203,150,101,0.28); /* subtle soft gold glow */
+
+  /* Blur = expensive, not cheap shadow */
+  filter: blur(14px);
+  opacity: 0.65;
+
+  /* Sits behind avatar, doesn't shift layout */
+  z-index: -1;
+
+  /* Constant presence — no animation needed */
+}
+
+
+@keyframes avatarPulse {
+  0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(203,150,101,0.4); }
+  70% { transform: scale(1.03); box-shadow: 0 0 0 9px rgba(203,150,101,0); }
+  100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(203,150,101,0); }
+}
+
+/* ===== Typing Indicator ===== */
+.typingBubble {
+  min-width: 70px;
+  padding: 10px 14px;
+  background: var(--aa-white);
+  border: 2px solid var(--aa-gold);
+  border-radius: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--aa-crimson);
+  animation: strategyDot 1.2s infinite ease-in-out;
+}
+
+.dot:nth-child(2) { animation-delay: 0.15s; }
+.dot:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes strategyDot {
+  0%, 100% { transform: scale(0.6); opacity: 0.6; }
+  50% { transform: scale(1); opacity: 1; }
+}
+
+/* ===== Sticky Input Bar ===== */
+.inputForm {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  padding: 12px 10px;
+  border-top: 3px solid var(--aa-gold);
+  background: #F9F7F4;
+}
+
+/* Input */
+.input {
+  flex-grow: 1;
+  padding: 16px 24px;
+  border-radius: 60px;
+  border: 2px solid var(--aa-gold);
+  font-size: 1em;
+  background: var(--aa-white);
+}
+
+.input::placeholder {
+  color: var(--aa-text);
+  opacity: 0.5;
+  font-style: italic;
+}
+
+/* Input focus */
+.input:focus {
+  outline: none !important;
+  border-color: var(--aa-crimson);
+  box-shadow: 0 0 0 3px rgba(203,150,101,0.25);
+}
+
+/* Send button */
+.button {
+  padding: 12px 20px;
+  background: var(--aa-crimson);
+  color: var(--aa-white);
+  border: none;
+  font-size: 1em;
+  border-radius: 60px;
+  cursor: pointer;
+}
+
+.button:hover {
+  border: 2px solid var(--aa-gold);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Clearfix helper */
+.clearfix::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* ===== Intro Avatar Speaking State ===== */
+.introAvatarWrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Extra ring only while audio is playing */
+.introAvatarSpeaking::after {
+  content: "";
+  position: absolute;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  border: 2px solid rgba(203,150,101,0.7);
+  animation: introAvatarRing 1.2s ease-out infinite;
+}
+
+@keyframes introAvatarRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.8;
+  }
+  70% {
+    transform: scale(1.1);
+    opacity: 0.2;
+  }
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
+}
+
+.uploadButton {
+  background: var(--aa-gold);
+  color: #ffffff;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+
+.uploadButton:hover {
+  background: var(--aa-gold-dark, #b37b52);
+}
+
+.uploadButton:active {
+  transform: scale(0.94);
+}
+/* ====== Input Bar Layout Fix ====== */
+
+.inputForm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Force fixed square buttons */
+.iconButton {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--aa-gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Mic, Upload, (future) Wave, etc. */
+.micButton,
+.uploadButton {
+  composes: iconButton;
+}
+
+/* Icon styles */
+.iconButton img,
+.iconButton svg {
+  width: 18px;
+  height: 18px;
+  pointer-events: none;
+}
+
