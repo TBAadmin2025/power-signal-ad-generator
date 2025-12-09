@@ -13,20 +13,25 @@ type MessageProps = {
   text: string;
 };
 
-/* ===== Architect Advisor Starter ===== */
-const STARTERS: string[] = [
-  "Kendra, can you help me decode my premium buyer?",
-];
+/* ==============================================
+   Architect Advisor Config (Environment Variables)
+   ============================================== */
 
-const WELCOME_BLURB = `
-Hey there, CEO.
+const STARTERS: string[] = (() => {
+  try {
+    return JSON.parse(process.env.NEXT_PUBLIC_CHAT_STARTERS || "[]");
+  } catch {
+    return [];
+  }
+})();
 
-You're here because you're about to decode your premium buyer — so you can stop guessing who actually pays you and start speaking directly to the people who make purchasing decisions.
+const WELCOME_BLURB: string =
+  process.env.NEXT_PUBLIC_WELCOME_BLURB || "";
 
-You're going to leave with a full buyer dossier you’ll use to build offers, ads, funnels, and sales messaging. This becomes your foundation.
+const WELCOME_AUDIO: string =
+  process.env.NEXT_PUBLIC_WELCOME_AUDIO || "";
 
-Let’s get into it ↓
-`;
+/* ============================================== */
 
 const Avatar = () => (
   <img
@@ -255,7 +260,7 @@ const Chat = () => {
 
             <audio
               ref={audioRef}
-              src="/audio/architect-advisor-premium-buyer-welcome.mp3"
+              src={WELCOME_AUDIO}
               onEnded={() => setIsPlaying(false)}
             />
           </div>
